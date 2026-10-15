@@ -19,7 +19,8 @@ kind: Deployment
 metadata:
   name: mysql
   labels:
-    # Icon in the OpenShift console Topology view
+    # Application grouping and icon in the OpenShift console Topology view
+    app.kubernetes.io/part-of: fruit-database-app
     app.openshift.io/runtime: mysql-database
 spec:
   selector:
@@ -78,7 +79,8 @@ kind: Deployment
 metadata:
   name: fruit-database
   labels:
-    # Icon in the OpenShift console Topology view
+    # Application grouping and icon in the OpenShift console Topology view
+    app.kubernetes.io/part-of: fruit-database-app
     app.openshift.io/runtime: quarkus
   annotations:
     # Draws an arrow to MySQL in the OpenShift console Topology view
