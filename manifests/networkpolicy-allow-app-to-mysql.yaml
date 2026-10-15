@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-app-to-mysql
+spec:
+  podSelector:
+    matchLabels:
+      name: mysql
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: fruit-database
+      ports:
+        - port: 3306

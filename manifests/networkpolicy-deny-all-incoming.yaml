@@ -1,0 +1,7 @@
+# Selects every pod in the namespace and allows no incoming traffic
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all-incoming
+spec:
+  podSelector: {}

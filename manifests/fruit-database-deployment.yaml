@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fruit-database
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fruit-database
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: fruit-database
+    spec:
+      containers:
+        - name: fruit-database
+          image: quay.io/mostmark/fruit-database:1.0
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8080

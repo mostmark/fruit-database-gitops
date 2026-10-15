@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      name: mysql
+  # The data volume is ReadWriteOnce, so the old pod must stop before a new one starts
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: registry.redhat.io/rhel8/mysql-80:latest
+          env:
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: database-user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: database-password
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: database-root-password
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: database-name
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - MYSQL_PWD="$MYSQL_PASSWORD" mysqladmin -u $MYSQL_USER ping
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql/data
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql

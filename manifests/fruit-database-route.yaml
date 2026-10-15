@@ -1,0 +1,11 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: fruit-database
+spec:
+  to:
+    kind: Service
+    name: fruit-database
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
