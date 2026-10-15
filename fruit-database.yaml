@@ -13,30 +13,18 @@ stringData:
   database-password: mypassword
   database-root-password: mypassword
 ---
-# Source: manifests/mysql-pvc.yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mysql
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
----
 # Source: manifests/mysql-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
+  labels:
+    # Icon in the OpenShift console Topology view
+    app.openshift.io/runtime: mysql-database
 spec:
   selector:
     matchLabels:
       name: mysql
-  # The data volume is ReadWriteOnce, so the old pod must stop before a new one starts
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
@@ -72,13 +60,6 @@ spec:
                 - /bin/sh
                 - -c
                 - MYSQL_PWD="$MYSQL_PASSWORD" mysqladmin -u $MYSQL_USER ping
-          volumeMounts:
-            - name: mysql-data
-              mountPath: /var/lib/mysql/data
-      volumes:
-        - name: mysql-data
-          persistentVolumeClaim:
-            claimName: mysql
 ---
 # Source: manifests/mysql-service.yaml
 apiVersion: v1
@@ -96,6 +77,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fruit-database
+  labels:
+    # Icon in the OpenShift console Topology view
+    app.openshift.io/runtime: quarkus
+  annotations:
+    # Draws an arrow to MySQL in the OpenShift console Topology view
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"mysql"}]'
 spec:
   selector:
     matchLabels:

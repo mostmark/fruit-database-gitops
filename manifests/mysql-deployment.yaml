@@ -2,13 +2,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
+  labels:
+    # Icon in the OpenShift console Topology view
+    app.openshift.io/runtime: mysql-database
 spec:
   selector:
     matchLabels:
       name: mysql
-  # The data volume is ReadWriteOnce, so the old pod must stop before a new one starts
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
@@ -44,10 +44,3 @@ spec:
                 - /bin/sh
                 - -c
                 - MYSQL_PWD="$MYSQL_PASSWORD" mysqladmin -u $MYSQL_USER ping
-          volumeMounts:
-            - name: mysql-data
-              mountPath: /var/lib/mysql/data
-      volumes:
-        - name: mysql-data
-          persistentVolumeClaim:
-            claimName: mysql

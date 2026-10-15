@@ -12,7 +12,7 @@ Quarkus demo application together with a MySQL database on OpenShift.
 
 Resources:
 
-- **MySQL**: `Secret`, `PersistentVolumeClaim` (1Gi, default storage class), `Deployment` (`registry.redhat.io/rhel8/mysql-80`) and `Service` (`mysql:3306`)
+- **MySQL**: `Secret`, `Deployment` (`registry.redhat.io/rhel8/mysql-80`, ephemeral storage, so data is lost when the pod restarts) and `Service` (`mysql:3306`)
 - **Application**: `Deployment` (`quay.io/mostmark/fruit-database:1.0`), `Service` and an edge-terminated `Route` (HTTP redirects to HTTPS)
 - **Network policies**:
   - `deny-all-incoming` blocks all incoming traffic to every pod in the namespace
